@@ -9,21 +9,28 @@ var casper = require('casper').create({
 });
 
 var x = require('casper').selectXPath;
+var links = [];
+function getLinks() {
+    var links = document.querySelectorAll('div.pu-visual-section a');
+    return Array.prototype.map.call(links, function(e) {
+        return e.getAttribute('href');
+    });
+}
 
 
 //casper.start('http://www.flipkart.com/mobiles/samsung~brand/pr?sid=tyy,4io&otracker=hp_nmenu_sub_electronics_0_Samsung');
 
 /*casper.then(function () {
-    this.sendKeys('#ctl00_centreContentPlaceHolder_txtEmail', 'marek@balticproperty.ee');
-    this.sendKeys('#ctl00_centreContentPlaceHolder_txtPassword', 'Estateguru1');
-//    console.log('Entering form element to textbox');
-});
+ this.sendKeys('#ctl00_centreContentPlaceHolder_txtEmail', 'marek@balticproperty.ee');
+ this.sendKeys('#ctl00_centreContentPlaceHolder_txtPassword', 'Estateguru1');
+ //    console.log('Entering form element to textbox');
+ });
 
-casper.thenClick(x('//*[@id="ctl00_centreContentPlaceHolder_btnLogin"]'), function () {
-//    console.log("submit the form");
+ casper.thenClick(x('//*[@id="ctl00_centreContentPlaceHolder_btnLogin"]'), function () {
+ //    console.log("submit the form");
 
-})
-*/
+ })
+ */
 
 //casper.wait(10000, function () {
 //    console.log('after waiting 3 seconds');
@@ -34,53 +41,45 @@ casper.thenClick(x('//*[@id="ctl00_centreContentPlaceHolder_btnLogin"]'), functi
 
 //})
 
-casper.start('http://www.flipkart.com/mobiles/pr?sid=tyy,4io&otracker=hp_nmenu_sub_electronics_0_All%20Brands', function() {
+casper.start('http://www.flipkart.com/laptop-accessories/pr?sid=6bo,ai3&otracker=ch_vn_computer_a_subcategory_Laptop%20Accessories', function() {
     this.scrollToBottom();
 });
-casper.wait(20000, function () {
-  var numTimes = 4, page = 1;
-    casper.repeat(numTimes, function () {
- this.scrollToBottom();
-        casper.wait(20000, function () {
 
-	})
+casper.wait(10000, function () {
+    var numTimes = 4, page = 1;
+    casper.repeat(numTimes, function () {
+        this.scrollToBottom();
+        casper.wait(10000, function () {
+
+        })
 
     })
-page=page+1;
+    page=page+1;
 })
 
+
 casper.thenClick(x('//*[@id="show-more-results"]'), function () {
-   var numTimes = 2, page = 1;
+    var numTimes = 860, page = 1;
     casper.repeat(numTimes, function () {
- this.scrollToBottom();
-        casper.wait(20000, function () {
-casper.capture(page+".png")
-	})
-casper.thenClick(x('//*[@id="show-more-results"]'), function () {
-})
+        this.scrollToBottom();
+        casper.wait(10000, function () {
+//casper.capture(page+".png")
+        })
+        casper.thenClick(x('//*[@id="show-more-results"]'), function () {
+        })
     })
-   page++;
+    page++;
 
 })
+casper.wait(10000, function () {
+    links = links.concat(this.evaluate(getLinks));
+})
+casper.run(function() {
+    // echo results in some pretty fashion
 
-casper.wait(20000, function () {
-// console.log(this.getHTML());
- var numTimes = 50, page = 1;
-    casper.repeat(numTimes, function () {
-var myXPath='//*[@id="products"]/div['+page+']/div[2]/div/div[1]/a/img'
-casper.thenClick(x(myXPath), function () {
- casper.wait(20000, function () {
-casper.capture(page+".png");
-casper.back();
+    this.echo('http://www.flipkart.com' +links.join('\nhttp://www.flipkart.com')).exit();
+
 });
- casper.wait(20000, function () {
-});
-})
-page++;
-})
-})
-
-casper.run();
 
 
 //*[@id="show-more-results"]
@@ -88,4 +87,3 @@ casper.run();
 
 
 //test.assertExists("input#gallery_file_0", "File field exists");
-
